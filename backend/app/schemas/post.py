@@ -27,5 +27,7 @@ class PostOut(PostBase):
     author_id: int
     created_at: datetime
     updated_at: datetime
+    likes_count: int = 0
+    liked: bool = False
 
     model_config = {"from_attributes": True}

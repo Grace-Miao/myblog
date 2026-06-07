@@ -10,6 +10,7 @@ from ..core.security import verify_password, hash_password, create_access_token,
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
@@ -29,6 +30,16 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     if not user or not verify_password(form.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
     return Token(access_token=create_access_token(user.username))
+
+
+def get_current_user_optional(token: str | None = Depends(oauth2_scheme_optional), db: Session = Depends(get_db)) -> User | None:
+    if not token:
+        return None
+    try:
+        username = decode_token(token)
+        return db.query(User).filter(User.username == username).first()
+    except Exception:
+        return None
 
 
 @router.post("/register", response_model=UserOut, status_code=201)

@@ -5,7 +5,7 @@ from .database import engine, Base
 from .routers import health, posts, auth, comments
 
 # Import models so SQLAlchemy registers them before create_all
-from .models import user, post, comment  # noqa: F401
+from .models import user, post, comment, like  # noqa: F401
 
 app = FastAPI(
     title="MyBlog API",

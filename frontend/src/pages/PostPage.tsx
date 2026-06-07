@@ -18,6 +18,7 @@ export default function PostPage() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [liking, setLiking] = useState(false);
 
   useEffect(() => {
     apiClient
@@ -28,6 +29,17 @@ export default function PostPage() {
 
     apiClient.get<Comment[]>(`/posts/${id}/comments`).then((res) => setComments(res.data));
   }, [id, navigate]);
+
+  async function handleLike() {
+    if (!user || !post || liking) return;
+    setLiking(true);
+    try {
+      const res = await apiClient.post<{ likes_count: number; liked: boolean }>(`/posts/${id}/like`);
+      setPost((p) => p ? { ...p, likes_count: res.data.likes_count, liked: res.data.liked } : p);
+    } finally {
+      setLiking(false);
+    }
+  }
 
   async function handleComment(e: FormEvent) {
     e.preventDefault();
@@ -49,7 +61,17 @@ export default function PostPage() {
     <article className="max-w-2xl mx-auto">
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight leading-tight mb-3">{post.title}</h1>
+        <div className="flex items-center gap-4 mt-2">
         <p className="text-sm text-gray-400">{new Date(post.created_at).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}</p>
+        <button
+          onClick={handleLike}
+          disabled={!user || liking}
+          className={`flex items-center gap-1.5 text-sm transition-colors ${post.liked ? "text-red-500" : "text-gray-400 hover:text-red-400"} disabled:cursor-default`}
+          title={user ? undefined : "登录后才能点赞"}
+        >
+          {post.liked ? "♥" : "♡"} {post.likes_count > 0 && post.likes_count}
+        </button>
+      </div>
       </header>
 
       <Separator className="mb-8" />
