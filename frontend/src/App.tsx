@@ -1,13 +1,33 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
+import LoginPage from "./pages/LoginPage";
 
 function Navbar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
+
   return (
-    <nav style={{ padding: "1rem 2rem", borderBottom: "1px solid #eee", background: "#fff" }}>
-      <Link to="/" style={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-        My Blog
-      </Link>
+    <nav style={{ padding: "1rem 2rem", borderBottom: "1px solid #eee", background: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Link to="/" style={{ fontWeight: "bold", fontSize: "1.2rem" }}>My Blog</Link>
+      <div>
+        {user ? (
+          <span>
+            <span style={{ marginRight: "1rem", color: "#666" }}>{user.username}</span>
+            <button onClick={handleLogout} style={{ background: "none", border: "1px solid #ccc", padding: "0.3rem 0.8rem", cursor: "pointer", borderRadius: "4px" }}>
+              退出
+            </button>
+          </span>
+        ) : (
+          <Link to="/login" style={{ color: "#333" }}>登录</Link>
+        )}
+      </div>
     </nav>
   );
 }
@@ -15,13 +35,16 @@ function Navbar() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <main style={{ maxWidth: "800px", margin: "2rem auto", padding: "0 1rem" }}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/posts/:id" element={<PostPage />} />
-        </Routes>
-      </main>
+      <AuthProvider>
+        <Navbar />
+        <main style={{ maxWidth: "800px", margin: "2rem auto", padding: "0 1rem" }}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/posts/:id" element={<PostPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </main>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
