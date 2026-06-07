@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/api/client";
 import type { Post } from "@/types";
 
@@ -32,47 +34,52 @@ export default function NewPostPage() {
   }
 
   return (
-    <div style={{ maxWidth: "720px", margin: "0 auto" }}>
-      <h1 style={{ marginBottom: "2rem" }}>写文章</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="标题"
-          required
-          style={{ padding: "0.6rem", fontSize: "1.2rem", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        <input
-          value={excerpt}
-          onChange={(e) => setExcerpt(e.target.value)}
-          placeholder="摘要（可选）"
-          style={{ padding: "0.6rem", fontSize: "1rem", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="正文（支持 Markdown）"
-          required
-          rows={20}
-          style={{ padding: "0.6rem", fontSize: "1rem", border: "1px solid #ccc", borderRadius: "4px", resize: "vertical", fontFamily: "monospace", lineHeight: "1.6" }}
-        />
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-          <input
-            type="checkbox"
-            checked={isPublished}
-            onChange={(e) => setIsPublished(e.target.checked)}
-          />
-          立即发布
-        </label>
-        {error && <p style={{ color: "red", margin: 0 }}>{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ padding: "0.7rem", fontSize: "1rem", background: "#222", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", alignSelf: "flex-start" }}
-        >
-          {loading ? "发布中…" : "发布"}
-        </button>
-      </form>
+    <div className="max-w-2xl mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>写文章</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="标题"
+              required
+              className="w-full px-3 py-2 text-xl font-semibold border-0 border-b border-gray-200 focus:outline-none focus:border-gray-900 bg-transparent"
+            />
+            <input
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
+              placeholder="摘要（可选，显示在文章列表）"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="正文（支持 Markdown）"
+              required
+              rows={20}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600">
+                <input
+                  type="checkbox"
+                  checked={isPublished}
+                  onChange={(e) => setIsPublished(e.target.checked)}
+                  className="rounded"
+                />
+                立即发布
+              </label>
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+              <Button type="submit" disabled={loading}>
+                {loading ? "发布中…" : "发布"}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

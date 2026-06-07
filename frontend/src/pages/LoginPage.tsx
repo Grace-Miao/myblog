@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
@@ -25,36 +27,38 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ maxWidth: "360px", margin: "4rem auto" }}>
-      <h1 style={{ marginBottom: "2rem" }}>登录</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="用户名"
-          required
-          style={{ padding: "0.6rem", fontSize: "1rem", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="密码"
-          required
-          style={{ padding: "0.6rem", fontSize: "1rem", border: "1px solid #ccc", borderRadius: "4px" }}
-        />
-        {error && <p style={{ color: "red", margin: 0 }}>{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ padding: "0.7rem", fontSize: "1rem", background: "#222", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}
-        >
-          {loading ? "登录中…" : "登录"}
-        </button>
-      </form>
-      <p style={{ marginTop: "1rem", color: "#666", fontSize: "0.9rem" }}>
-        还没有账号？<Link to="/register">注册</Link>
-      </p>
+    <div className="max-w-sm mx-auto mt-16">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">登录</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="用户名"
+              required
+              className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="密码"
+              required
+              className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "登录中…" : "登录"}
+            </Button>
+          </form>
+          <p className="mt-4 text-center text-sm text-gray-500">
+            还没有账号？<Link to="/register" className="text-gray-900 underline underline-offset-2">注册</Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
