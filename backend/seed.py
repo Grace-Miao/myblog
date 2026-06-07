@@ -4,13 +4,11 @@ import os
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from passlib.context import CryptContext
+import bcrypt
 from app.database import SessionLocal, engine, Base
 from app.models import user, post  # noqa: F401 — registers models
 from app.models.user import User
 from app.models.post import Post
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,7 +22,7 @@ if db.query(User).first():
 author = User(
     username="admin",
     email="admin@myblog.com",
-    hashed_password=pwd_context.hash("changeme"),
+    hashed_password=bcrypt.hashpw(b"changeme", bcrypt.gensalt()).decode(),
     bio="这里是我的个人博客。",
 )
 db.add(author)
