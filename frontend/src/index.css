@@ -1,10 +1,22 @@
 @import "tailwindcss";
+@import "highlight.js/styles/github.css";
+@import "katex/dist/katex.min.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 @import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
+
+/* 行内代码样式，覆盖 prose 默认 */
+.prose code:not(pre code) {
+  @apply bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-[0.85em] font-mono;
+  font-weight: 400;
+}
+.prose code:not(pre code)::before,
+.prose code:not(pre code)::after {
+  content: none;
+}
 
 @layer base {
   *, *::before, *::after {
