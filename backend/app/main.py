@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .database import engine, Base
-from .routers import health, posts, auth
+from .routers import health, posts, auth, comments
 
 # Import models so SQLAlchemy registers them before create_all
-from .models import user, post  # noqa: F401
+from .models import user, post, comment  # noqa: F401
 
 app = FastAPI(
     title="MyBlog API",
@@ -25,6 +25,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(posts.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
+app.include_router(comments.router, prefix="/api")
 
 
 @app.on_event("startup")

@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models.post import Post
+from ..models.user import User
 from ..schemas.post import PostCreate, PostOut, PostUpdate
+from .auth import get_current_user
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -21,9 +23,8 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=PostOut, status_code=201)
-def create_post(post_in: PostCreate, db: Session = Depends(get_db)):
-    # TODO: get author_id from JWT token (Week 3)
-    post = Post(**post_in.model_dump(), author_id=1)
+def create_post(post_in: PostCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    post = Post(**post_in.model_dump(), author_id=current_user.id)
     db.add(post)
     db.commit()
     db.refresh(post)

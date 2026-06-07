@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from jose import JWTError
 from ..database import get_db
 from ..models.user import User
-from ..schemas.user import Token, UserOut
-from ..core.security import verify_password, create_access_token, decode_token
+from ..schemas.user import Token, UserOut, UserCreate
+from ..core.security import verify_password, hash_password, create_access_token, decode_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -29,6 +29,23 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     if not user or not verify_password(form.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="用户名或密码错误")
     return Token(access_token=create_access_token(user.username))
+
+
+@router.post("/register", response_model=UserOut, status_code=201)
+def register(user_in: UserCreate, db: Session = Depends(get_db)):
+    if db.query(User).filter(User.username == user_in.username).first():
+        raise HTTPException(status_code=400, detail="用户名已存在")
+    if db.query(User).filter(User.email == user_in.email).first():
+        raise HTTPException(status_code=400, detail="邮箱已被注册")
+    user = User(
+        username=user_in.username,
+        email=user_in.email,
+        hashed_password=hash_password(user_in.password),
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 @router.get("/me", response_model=UserOut)

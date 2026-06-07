@@ -10,6 +10,13 @@ export interface Post {
   updated_at: string;
 }
 
+export interface Comment {
+  id: number;
+  content: string;
+  author_username: string;
+  created_at: string;
+}
+
 export interface User {
   id: number;
   username: string;
