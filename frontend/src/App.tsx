@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
 import LoginPage from "./pages/LoginPage";
